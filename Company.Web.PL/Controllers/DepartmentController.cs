@@ -44,5 +44,46 @@ namespace Company.Web.PL.Controllers
             }
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var department = _repository.Get(id);
+            return View(department);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var department = _repository.Get(id);
+            return View(department);
+        }
+        [HttpPost]
+        public IActionResult Edit(Department model)
+        {
+            if (ModelState.IsValid)
+            {
+                int count = _repository.Update(model);
+                if (count > 0)
+                    return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var department = _repository.Get(id);
+            return View(department);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public IActionResult ConfirmDelete(int id)
+        {
+            var department = _repository.Get(id);
+            _repository.Delete(department);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

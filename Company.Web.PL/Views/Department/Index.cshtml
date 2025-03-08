@@ -16,9 +16,10 @@
                 <th>Code</th>
                 <th>Name</th>
                 <th>CreateAt</th>
-                <th>Details</th>
+                <th></th>
+              @*   <th>Details</th>
                 <th>Update</th>
-                <th>Delete</th>
+                <th>Delete</th> *@
             </tr>
         </thead>
         <tbody>
@@ -29,13 +30,9 @@
                     <td>@item.Name </td>
                     <td>@item.CreateAt </td>
                     <td>
-                        <a asp-action="Details" class="btn btn-secondary">Details</a>
-                    </td>
-                    <td>
-                        <a asp-action="Update" class="btn btn-success">Update</a>
-                    </td>
-                    <td>
-                        <a asp-action="Delete" class="btn btn-danger">Delete</a>
+                        <a asp-action="Details" asp-route-Id="@item.Id" class="btn btn-secondary">Details</a>
+                        <a asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-success">Update</a>
+                        <a asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
             }
