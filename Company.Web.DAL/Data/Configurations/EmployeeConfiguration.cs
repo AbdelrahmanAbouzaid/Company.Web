@@ -15,6 +15,7 @@ namespace Company.Web.DAL.Data.Configurations
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.Property(e => e.Salary).HasColumnType("decimal(18,2)");
+            builder.HasOne(e => e.Department).WithMany(d => d.Employees).HasForeignKey(d => d.DepartmentId);
         }
     }
 }
