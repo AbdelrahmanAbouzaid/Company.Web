@@ -1,6 +1,7 @@
 using Company.Web.BLL.Interfaces;
 using Company.Web.BLL.Repositories;
 using Company.Web.DAL.Data.Contexts;
+using Company.Web.PL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Web.PL
@@ -19,6 +20,8 @@ namespace Company.Web.PL
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(m => m.AddProfile(new EmployeeProfile()));
 
             var app = builder.Build();
 
