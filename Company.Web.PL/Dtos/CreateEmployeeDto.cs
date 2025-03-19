@@ -1,4 +1,7 @@
-﻿namespace Company.Web.PL.Dtos
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace Company.Web.PL.Dtos
 {
     public class CreateEmployeeDto
     {
@@ -12,5 +15,7 @@
         public bool IsDelete { get; set; }
         public DateTime HiringDate { get; set; }
         public DateTime CreateAt { get; set; }
+        [DisplayName("Department")]
+        public int? DepartmentId { get; set; }
     }
 }

@@ -8,10 +8,12 @@ namespace Company.Web.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _repository;
+        private readonly IDepartmentRepository _deptRepo;
 
-        public EmployeeController(IEmployeeRepository repository)
+        public EmployeeController(IEmployeeRepository repository, IDepartmentRepository deptRepo)
         {
             _repository = repository;
+            _deptRepo = deptRepo;
         }
 
         [HttpGet]
@@ -24,6 +26,8 @@ namespace Company.Web.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var departments = _deptRepo.GetAll();
+            ViewData["departments"] = departments;
             return View();
         }
         [HttpPost]
