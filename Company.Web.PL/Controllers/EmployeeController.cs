@@ -17,9 +17,15 @@ namespace Company.Web.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? searchInput)
         {
-            var employees = _repository.GetAll();
+            IEnumerable<Employee> employees;
+            if (!string.IsNullOrEmpty(searchInput))
+            {
+                employees = _repository.GetByName(searchInput);
+            }else
+                employees = _repository.GetAll();
+
             return View(employees);
         }
 
@@ -80,7 +86,7 @@ namespace Company.Web.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit([FromRoute]int? id)
+        public IActionResult Edit([FromRoute] int? id)
         {
             if (id is null) return BadRequest("Invalid Id !");
             var employee = _repository.Get(id.Value);
@@ -102,7 +108,7 @@ namespace Company.Web.PL.Controllers
             return View(dto);
         }
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id,CreateEmployeeDto model)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
