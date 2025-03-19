@@ -25,20 +25,17 @@ namespace Company.Web.BLL.Repositories
         {
             return _context.Set<TEntity>().Find(id);
         }
-        public int Add(TEntity model)
+        public void Add(TEntity model)
         {
             _context.Set<TEntity>().Add(model);
-            return _context.SaveChanges();
         }
-        public int Update(TEntity model)
+        public void Update(TEntity model)
         {
             _context.Set<TEntity>().Update(model);
-            return _context.SaveChanges();
         }
-        public int Delete(TEntity model)
+        public void Delete(TEntity model)
         {
             _context.Set<TEntity>().Remove(model);
-            return _context.SaveChanges();
         }
 
     }
