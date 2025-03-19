@@ -8,17 +8,20 @@ namespace Company.Web.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _repository;
-        private readonly IDepartmentRepository _deptRepo;
+        //private readonly IEmployeeRepository _repository;
+        //private readonly IDepartmentRepository _deptRepo;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
         public EmployeeController(
-            IEmployeeRepository repository,
-            IDepartmentRepository deptRepo,
+            //IEmployeeRepository repository,
+            //IDepartmentRepository deptRepo,
+            IUnitOfWork _unitOfWork,
             IMapper mapper)
         {
-            _repository = repository;
-            _deptRepo = deptRepo;
+            //_repository = repository;
+            //_deptRepo = deptRepo;
+            unitOfWork = _unitOfWork;
             this.mapper = mapper;
         }
 
@@ -28,9 +31,9 @@ namespace Company.Web.PL.Controllers
             IEnumerable<Employee> employees;
             if (!string.IsNullOrEmpty(searchInput))
             {
-                employees = _repository.GetByName(searchInput);
+                employees = unitOfWork.EmployeeRepository.GetByName(searchInput);
             }else
-                employees = _repository.GetAll();
+                employees = unitOfWork.EmployeeRepository.GetAll();
 
             return View(employees);
         }
@@ -38,7 +41,7 @@ namespace Company.Web.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var departments = _deptRepo.GetAll();
+            var departments = unitOfWork.DepartmentRepository.GetAll();
             ViewData["departments"] = departments;
             return View();
         }
@@ -61,7 +64,8 @@ namespace Company.Web.PL.Controllers
                 //    IsDelete = model.IsDelete,
                 //};
                 var employee = mapper.Map<Employee>(model);
-                var count = _repository.Add(employee);
+                unitOfWork.EmployeeRepository.Add(employee);
+                var count = unitOfWork.SaveChanges();
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
             }
@@ -72,7 +76,7 @@ namespace Company.Web.PL.Controllers
         public IActionResult Details([FromRoute] int? id)
         {
             if (id is null) return BadRequest("Invalid Id !");
-            var employee = _repository.Get(id.Value);
+            var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
 
@@ -96,7 +100,7 @@ namespace Company.Web.PL.Controllers
         public IActionResult Edit([FromRoute] int? id)
         {
             if (id is null) return BadRequest("Invalid Id !");
-            var employee = _repository.Get(id.Value);
+            var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
             //var dto = new CreateEmployeeDto()
@@ -135,8 +139,9 @@ namespace Company.Web.PL.Controllers
                 //    Id = id
                 //};
                 var employee = mapper.Map<Employee>(model);
+                unitOfWork.EmployeeRepository.Update(employee);
+                var count = unitOfWork.SaveChanges();
 
-                var count = _repository.Update(employee);
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
             }
@@ -147,7 +152,7 @@ namespace Company.Web.PL.Controllers
         public IActionResult Delete(int? id)
         {
             if (id is null) return BadRequest("Invalid Id !");
-            var employee = _repository.Get(id.Value);
+            var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
             //var dto = new CreateEmployeeDto()
@@ -174,10 +179,10 @@ namespace Company.Web.PL.Controllers
         {
             if (id is null)
                 return BadRequest("Invalid Id");
-            var employee = _repository.Get(id.Value);
+            var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
-            _repository.Delete(employee);
+            unitOfWork.EmployeeRepository.Delete(employee);
             return RedirectToAction(nameof(Index));
         }
     }

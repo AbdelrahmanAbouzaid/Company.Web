@@ -7,17 +7,19 @@ namespace Company.Web.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _repository;
+        //private readonly IDepartmentRepository _repository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DepartmentController(IDepartmentRepository repository)
+        public DepartmentController(/*IDepartmentRepository repository*/IUnitOfWork _unitOfWork)
         {
-            this._repository = repository;
+            //this._repository = repository;
+            unitOfWork = _unitOfWork;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var departments = _repository.GetAll();
+            var departments = unitOfWork.DepartmentRepository.GetAll();
             return View(departments);
         }
 
@@ -39,7 +41,9 @@ namespace Company.Web.PL.Controllers
                     Name = model.Name,
                     CreateAt = model.CreateAt
                 };
-                int count = _repository.Add(department);
+                unitOfWork.DepartmentRepository.Add(department);
+                var count = unitOfWork.SaveChanges();
+
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
             }
@@ -51,7 +55,7 @@ namespace Company.Web.PL.Controllers
         {
             if (id is null)
                 return BadRequest("Invalid Id");
-            var department = _repository.Get(id.Value);
+            var department = unitOfWork.DepartmentRepository.Get(id.Value);
             if (department is null)
                 return NotFound($"DEpartment With Id {id} Is Not Found");
             return View(viewName,department);
@@ -74,7 +78,9 @@ namespace Company.Web.PL.Controllers
             if (ModelState.IsValid)
             {
                 if (id != model.Id) return BadRequest();
-                int count = _repository.Update(model);
+                unitOfWork.DepartmentRepository.Update(model);
+                var count = unitOfWork.SaveChanges();
+
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
             }
@@ -99,10 +105,10 @@ namespace Company.Web.PL.Controllers
         {
             if (id is null)
                 return BadRequest("Invalid Id");
-            var department = _repository.Get(id.Value);
+            var department = unitOfWork.DepartmentRepository.Get(id.Value);
             if (department is null)
                 return NotFound($"DEpartment With Id {id} Is Not Found");
-            _repository.Delete(department);
+            unitOfWork.DepartmentRepository.Delete(department);
             return RedirectToAction(nameof(Index));
         }
 
