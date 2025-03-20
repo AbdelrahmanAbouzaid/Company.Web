@@ -2,6 +2,7 @@
 using Company.Web.BLL.Interfaces;
 using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
+using Company.Web.PL.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Web.PL.Controllers
@@ -32,7 +33,8 @@ namespace Company.Web.PL.Controllers
             if (!string.IsNullOrEmpty(searchInput))
             {
                 employees = unitOfWork.EmployeeRepository.GetByName(searchInput);
-            }else
+            }
+            else
                 employees = unitOfWork.EmployeeRepository.GetAll();
 
             return View(employees);
@@ -50,19 +52,10 @@ namespace Company.Web.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var employee = new Employee()
-                //{
-                //    Name = model.Name,
-                //    Age = model.Age,
-                //    Address = model.Address,
-                //    Phone = model.Phone,
-                //    Email = model.Email,
-                //    Salary = model.Salary,
-                //    CreateAt = model.CreateAt,
-                //    HiringDate = model.HiringDate,
-                //    IsActive = model.IsActive,
-                //    IsDelete = model.IsDelete,
-                //};
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
                 var employee = mapper.Map<Employee>(model);
                 unitOfWork.EmployeeRepository.Add(employee);
                 var count = unitOfWork.SaveChanges();
@@ -123,22 +116,18 @@ namespace Company.Web.PL.Controllers
         public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
-            {
-                //var employee = new Employee()
-                //{
-                //    Name = model.Name,
-                //    Age = model.Age,
-                //    Address = model.Address,
-                //    Phone = model.Phone,
-                //    Email = model.Email,
-                //    Salary = model.Salary,
-                //    CreateAt = model.CreateAt,
-                //    HiringDate = model.HiringDate,
-                //    IsActive = model.IsActive,
-                //    IsDelete = model.IsDelete,
-                //    Id = id
-                //};
+            {   
+                if(model.ImageName is not null && model.Image is not null)
+                {
+                    DocumentSettings.Delete(model.ImageName,"images");
+                }
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
+               
                 var employee = mapper.Map<Employee>(model);
+                employee.Id = id;
                 unitOfWork.EmployeeRepository.Update(employee);
                 var count = unitOfWork.SaveChanges();
 
@@ -182,7 +171,9 @@ namespace Company.Web.PL.Controllers
             var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
+            DocumentSettings.Delete(employee.ImageName,"images");
             unitOfWork.EmployeeRepository.Delete(employee);
+            unitOfWork.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
     }
