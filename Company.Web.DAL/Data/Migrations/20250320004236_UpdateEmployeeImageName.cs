@@ -5,7 +5,7 @@
 namespace Company.Web.DAL.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEmployeeDepartmentRelationship : Migration
+    public partial class UpdateEmployeeImageName : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,8 +14,13 @@ namespace Company.Web.DAL.Data.Migrations
                 name: "DepartmentId",
                 table: "Employees",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ImageName",
+                table: "Employees",
+                type: "nvarchar(max)",
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_DepartmentId",
@@ -27,8 +32,7 @@ namespace Company.Web.DAL.Data.Migrations
                 table: "Employees",
                 column: "DepartmentId",
                 principalTable: "Departments",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -44,6 +48,10 @@ namespace Company.Web.DAL.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "DepartmentId",
+                table: "Employees");
+
+            migrationBuilder.DropColumn(
+                name: "ImageName",
                 table: "Employees");
         }
     }
