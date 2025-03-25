@@ -17,7 +17,8 @@
                 <th>Name</th>
                 <th>CreateAt</th>
                 <th></th>
-              @*   <th>Details</th>
+                <th></th>
+                @*   <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th> *@
             </tr>
@@ -29,6 +30,9 @@
                     <td>@item.Code </td>
                     <td>@item.Name </td>
                     <td>@item.CreateAt </td>
+                    <td>
+                        <a asp-action="List" asp-controller="Employee" asp-route-id="@item.Id" class="btn btn-secondary">Employees</a>
+                    </td>
                     <td>
                         <a asp-action="Details" asp-route-Id="@item.Id" class="btn btn-secondary">Details</a>
                         <a asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-success">Update</a>
