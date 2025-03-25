@@ -39,6 +39,12 @@ namespace Company.Web.PL.Controllers
 
             return View(employees);
         }
+        [HttpGet]
+        public IActionResult List(int id)
+        {
+            var result = unitOfWork.DepartmentRepository.Get(id);
+            return View(nameof(Index), result?.Employees);
+        }
 
         [HttpGet]
         public IActionResult Create()
@@ -96,6 +102,8 @@ namespace Company.Web.PL.Controllers
             var employee = unitOfWork.EmployeeRepository.Get(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
+            var departments = unitOfWork.DepartmentRepository.GetAll();
+            ViewData["departments"] = departments;
             //var dto = new CreateEmployeeDto()
             //{
             //    Name = employee.Name,

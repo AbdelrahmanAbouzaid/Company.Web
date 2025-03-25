@@ -8,11 +8,11 @@
 <form>
     <div>
         <input type="text" placeholder="Search" name="searchInput" class="form-control"/>
-        <input type="submit" value="Search" class="btn btn-success"/>
+        <input type="submit" value="Search" class="btn btn-success my-3"/>
 
     </div>
 </form>
-<br />
+<hr />
 <a asp-action="Create" class="btn btn-primary">Create Employee</a>
 <br />
 
@@ -44,7 +44,7 @@
                     @Html.DisplayNameFor(model => model.HiringDate)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CreateAt)
+                    @Html.DisplayNameFor(model => model.Department)
                 </th>
 
                 <th></th>
@@ -82,9 +82,13 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.HiringDate)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreateAt)
-                    </td>
+                    @if(item.Department is not null){
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Department.Name)
+                        </td>
+                    }else{
+                        <td>No Department</td>
+                    }
 
                     <td>
                         <a asp-action="Details" asp-route-Id="@item.Id" class="btn btn-secondary">Details</a>
