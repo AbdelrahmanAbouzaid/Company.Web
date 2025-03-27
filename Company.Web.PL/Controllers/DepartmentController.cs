@@ -17,9 +17,9 @@ namespace Company.Web.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = unitOfWork.DepartmentRepository.GetAll();
+            var departments = await unitOfWork.DepartmentRepository.GetAllAsync();
             return View(departments);
         }
 
@@ -31,7 +31,7 @@ namespace Company.Web.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateDepartmentDto model)
+        public async Task<IActionResult> Create(CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
@@ -41,8 +41,8 @@ namespace Company.Web.PL.Controllers
                     Name = model.Name,
                     CreateAt = model.CreateAt
                 };
-                unitOfWork.DepartmentRepository.Add(department);
-                var count = unitOfWork.SaveChanges();
+                await unitOfWork.DepartmentRepository.AddAsync(department);
+                var count = await unitOfWork.SaveChangesAsync();
 
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
@@ -51,18 +51,18 @@ namespace Company.Web.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id , string viewName="Details")
+        public async Task<IActionResult> Details(int? id , string viewName="Details")
         {
             if (id is null)
                 return BadRequest("Invalid Id");
-            var department = unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = await unitOfWork.DepartmentRepository.GetAsync(id.Value);
             if (department is null)
                 return NotFound($"DEpartment With Id {id} Is Not Found");
             return View(viewName,department);
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public Task<IActionResult> Edit(int? id)
         {
             //if (id is null)
             //    return BadRequest("Invalid Id");
@@ -73,13 +73,13 @@ namespace Company.Web.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department model)
+        public async Task<IActionResult> Edit([FromRoute] int id, Department model)
         {
             if (ModelState.IsValid)
             {
                 if (id != model.Id) return BadRequest();
                 unitOfWork.DepartmentRepository.Update(model);
-                var count = unitOfWork.SaveChanges();
+                var count = await unitOfWork.SaveChangesAsync();
 
                 if (count > 0)
                     return RedirectToAction(nameof(Index));
@@ -88,7 +88,7 @@ namespace Company.Web.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public Task<IActionResult> Delete(int? id)
         {
             //if (id is null)
             //    return BadRequest("Invalid Id");
@@ -101,15 +101,18 @@ namespace Company.Web.PL.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
-        public IActionResult ConfirmDelete([FromRoute] int? id)
+        public async Task<IActionResult> ConfirmDelete([FromRoute] int? id)
         {
             if (id is null)
                 return BadRequest("Invalid Id");
-            var department = unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = await unitOfWork.DepartmentRepository.GetAsync(id.Value);
             if (department is null)
                 return NotFound($"DEpartment With Id {id} Is Not Found");
             unitOfWork.DepartmentRepository.Delete(department);
-            return RedirectToAction(nameof(Index));
+            var count = await unitOfWork.SaveChangesAsync();
+            if(count > 0)
+                return RedirectToAction(nameof(Index));
+            return View(id);
         }
 
 

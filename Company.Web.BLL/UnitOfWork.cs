@@ -22,13 +22,14 @@ namespace Company.Web.BLL
             DepartmentRepository = new DepartmentRepository(context);
             EmployeeRepository = new EmployeeRepository(context);
         }
-        public int SaveChanges()
+        public async Task<int> SaveChangesAsync()
         {
-            return context.SaveChanges();
+            return await context.SaveChangesAsync();
         }
-        public void Dispose()
+
+        public async ValueTask DisposeAsync()
         {
-            context.Dispose();
+            await context.DisposeAsync();
         }
     }
 }

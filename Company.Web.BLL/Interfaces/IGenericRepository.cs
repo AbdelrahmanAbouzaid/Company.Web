@@ -9,9 +9,9 @@ namespace Company.Web.BLL.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        IEnumerable<TEntity> GetAll();
-        TEntity? Get(int id);
-        void Add(TEntity model);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<TEntity?> GetAsync(int id);
+        Task AddAsync(TEntity model);
         void Update(TEntity model);
         void Delete(TEntity model);
     }
