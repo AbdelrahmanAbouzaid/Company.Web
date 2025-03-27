@@ -18,33 +18,34 @@ namespace Company.Web.BLL.Repositories
         {
             _context = context;
         }
-        public IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             if (typeof(TEntity) == typeof(Employee))
             {
-                return (IEnumerable<TEntity>)_context.Employees.Include(e => e.Department).ToList();
-            }else if (typeof(TEntity) == typeof(Department))
-            {
-                return (IEnumerable<TEntity>)_context.Departments.Include(e => e.Employees).ToList();
-            }
-            return _context.Set<TEntity>().ToList();
-        }
-        public TEntity? Get(int id)
-        {
-            if (typeof(TEntity) == typeof(Employee))
-            {
-                return _context.Employees.Include(e => e.Department).FirstOrDefault(e => e.Id == id) as TEntity;
-                
+                return (IEnumerable<TEntity>)await _context.Employees.Include(e => e.Department).ToListAsync();
             }
             else if (typeof(TEntity) == typeof(Department))
             {
-                return _context.Departments.Include(e => e.Employees).FirstOrDefault(e => e.Id == id) as TEntity;
+                return (IEnumerable<TEntity>)await _context.Departments.Include(e => e.Employees).ToListAsync();
             }
-            return _context.Set<TEntity>().Find(id);
+            return await _context.Set<TEntity>().ToListAsync();
         }
-        public void Add(TEntity model)
+        public async Task<TEntity?> GetAsync(int id)
         {
-            _context.Set<TEntity>().Add(model);
+            if (typeof(TEntity) == typeof(Employee))
+            {
+                return await _context.Employees.Include(e => e.Department).FirstOrDefaultAsync(e => e.Id == id) as TEntity;
+
+            }
+            else if (typeof(TEntity) == typeof(Department))
+            {
+                return await _context.Departments.Include(e => e.Employees).FirstOrDefaultAsync(e => e.Id == id) as TEntity;
+            }
+            return await _context.Set<TEntity>().FindAsync(id);
+        }
+        public async Task AddAsync(TEntity model)
+        {
+            await _context.Set<TEntity>().AddAsync(model);
         }
         public void Update(TEntity model)
         {
