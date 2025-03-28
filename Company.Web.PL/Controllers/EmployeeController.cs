@@ -3,10 +3,12 @@ using Company.Web.BLL.Interfaces;
 using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
 using Company.Web.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Web.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         //private readonly IEmployeeRepository _repository;

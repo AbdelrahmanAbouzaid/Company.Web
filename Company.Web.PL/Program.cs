@@ -2,7 +2,9 @@ using Company.Web.BLL;
 using Company.Web.BLL.Interfaces;
 using Company.Web.BLL.Repositories;
 using Company.Web.DAL.Data.Contexts;
+using Company.Web.DAL.Models;
 using Company.Web.PL.Mapping;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Web.PL
@@ -25,6 +27,16 @@ namespace Company.Web.PL
             });
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(m => m.AddProfile(new EmployeeProfile()));
+            builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
+            {
+                option.Password.RequiredLength = 4;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = false;
+                option.Password.RequireDigit = false;
+            }).AddEntityFrameworkStores<CompanyContext>();
+            builder.Services.ConfigureApplicationCookie(option =>
+                option.LoginPath = "/Account/SignIn"
+            );
 
             var app = builder.Build();
 
@@ -41,6 +53,7 @@ namespace Company.Web.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

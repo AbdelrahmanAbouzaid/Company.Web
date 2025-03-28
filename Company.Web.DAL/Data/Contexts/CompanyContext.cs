@@ -1,4 +1,5 @@
 ﻿using Company.Web.DAL.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Company.Web.DAL.Data.Contexts
 {
-    public class CompanyContext : DbContext
+    public class CompanyContext : IdentityDbContext<AppUser>
     {
 
 
