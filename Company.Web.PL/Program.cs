@@ -33,7 +33,7 @@ namespace Company.Web.PL
                 option.Password.RequireNonAlphanumeric = false;
                 option.Password.RequireUppercase = false;
                 option.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<CompanyContext>();
+            }).AddEntityFrameworkStores<CompanyContext>().AddDefaultTokenProviders();
             builder.Services.ConfigureApplicationCookie(option =>
                 option.LoginPath = "/Account/SignIn"
             );

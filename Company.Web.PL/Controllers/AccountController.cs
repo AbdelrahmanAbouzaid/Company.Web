@@ -1,5 +1,6 @@
 ﻿using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
+using Company.Web.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -87,6 +88,82 @@ namespace Company.Web.PL.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction(nameof(SignIn));
+        }
+
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordDto model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user is not null)
+            {
+                if (ModelState.IsValid)
+                {
+                    //Create token
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    //Create url
+                    var url = Url.Action(action: "ResetPassword", controller: "Account", new { model.Email, token }, Request.Scheme);
+
+                    //Create email
+                    Email email = new Email()
+                    {
+                        To = model.Email,
+                        Subject = $"Reset Pawword {user.UserName}",
+                        Body = url
+                    };
+                    //send email
+                    bool flag = EmailSetting.SendEmail(email);
+                    if (flag)
+                    {
+                        return RedirectToAction("CheckInbox");
+                    }
+                }
+            }
+            ModelState.AddModelError("", "Invalid Reset Password !");
+            return View(nameof(ForgetPassword), model);
+        }
+
+        [HttpGet]
+        public IActionResult CheckInbox()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["email"] as string;
+                var token = TempData["token"] as string;
+                if (email is null || token is null) return BadRequest("Invalid Operation!");
+
+                var user = await userManager.FindByEmailAsync(email);
+                if (user is not null)
+                {
+                    var result = await userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(SignIn));
+                    }
+                }
+
+            }
+            return View(model);
         }
     }
 }
