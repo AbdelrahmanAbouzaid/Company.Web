@@ -10,11 +10,12 @@ namespace Company.Web.PL.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
-
-        public AccountController(UserManager<AppUser> _userManager, SignInManager<AppUser> signInManager)
+        private readonly IMailServices mailServices;
+        public AccountController(UserManager<AppUser> _userManager, SignInManager<AppUser> signInManager, IMailServices mailServices)
         {
             userManager = _userManager;
             this.signInManager = signInManager;
+            this.mailServices = mailServices;
         }
         [HttpGet]
         public IActionResult SignUp()
@@ -118,7 +119,8 @@ namespace Company.Web.PL.Controllers
                         Body = url
                     };
                     //send email
-                    bool flag = EmailSetting.SendEmail(email);
+                    //bool flag = EmailSetting.SendEmail(email);
+                    bool flag = mailServices.SendEmail(email);
                     if (flag)
                     {
                         return RedirectToAction("CheckInbox");

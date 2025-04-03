@@ -3,7 +3,9 @@ using Company.Web.BLL.Interfaces;
 using Company.Web.BLL.Repositories;
 using Company.Web.DAL.Data.Contexts;
 using Company.Web.DAL.Models;
+using Company.Web.PL.Helper;
 using Company.Web.PL.Mapping;
+using Company.Web.PL.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +39,12 @@ namespace Company.Web.PL
             builder.Services.ConfigureApplicationCookie(option =>
                 option.LoginPath = "/Account/SignIn"
             );
+
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddScoped<IMailServices, MailServices>();
+
+
+
 
             var app = builder.Build();
 
