@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Employee>
+
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salary)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.HiringDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImageName))
+                    {
+                        <img src="~/files/images/@item.ImageName" width="50" class="img-fluid rounded-circle" />
+                    }
+                    else
+                    {
+                        <img src="~/files/images/default.jpg" width="50" class="img-fluid rounded-circle" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.HiringDate)
+                </td>
+                @if (item.Department is not null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department.Name)
+                    </td>
+                }
+                else
+                {
+                    <td>No Department</td>
+                }
+
+                <td>
+                    <a asp-action="Details" asp-route-Id="@item.Id" class="btn btn-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-success">Update</a>
+                    <a asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

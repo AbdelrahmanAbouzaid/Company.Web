@@ -38,8 +38,23 @@ namespace Company.Web.PL.Controllers
             }
             else
                 employees = await unitOfWork.EmployeeRepository.GetAllAsync();
-
             return View(employees);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? searchInput)
+        {
+            IEnumerable<Employee> employees;
+            if (!string.IsNullOrEmpty(searchInput))
+            {
+                employees = await unitOfWork.EmployeeRepository.GetByNameAsync(searchInput);
+            }
+            else
+                employees = await unitOfWork.EmployeeRepository.GetAllAsync();
+
+            return View("EmployeePartials/EmployeeParialView", employees);
+
         }
         [HttpGet]
         public async Task<IActionResult> List(int id)

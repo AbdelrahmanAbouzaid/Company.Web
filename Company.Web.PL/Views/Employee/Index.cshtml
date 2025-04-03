@@ -7,7 +7,7 @@
 <h1>Employees</h1>
 <form>
     <div>
-        <input type="text" placeholder="Search" name="searchInput" class="form-control"/>
+        <input type="text" placeholder="Search" id="searchInput" name="searchInput" class="form-control"/>
         <input type="submit" value="Search" class="btn btn-success my-3"/>
 
     </div>
@@ -99,6 +99,8 @@
             }
         </tbody>
     </table>
+
+  @*   <partial name="EmployeePartials/EmployeePartialView" model="Model" /> *@
 }
 else
 {
@@ -106,3 +108,28 @@ else
         <h4>There is no Employee :(</h4>
     </div>
 }
+
+
+
+<script>
+    $(document).ready(function () {
+        const searchBar = $('#searchInput');
+        const table = $('table');
+
+        searchBar.on('keyup', function (event) {
+            var searchValue = searchBar.val();
+
+            $.ajax({
+                url: '/Employee/Search',
+                type: 'Get',
+                data: { searchInput: searchValue },
+                success: function (result) {
+                    table.html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
