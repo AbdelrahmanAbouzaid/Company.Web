@@ -1,6 +1,9 @@
 ﻿using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
 using Company.Web.PL.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -167,5 +170,59 @@ namespace Company.Web.PL.Controllers
             }
             return View(model);
         }
+
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action(nameof(GoogleResponse))
+            };
+
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(cliam => new
+            {
+                cliam.Type,
+                cliam.Value,
+                cliam.Issuer,
+                cliam.OriginalIssuer
+            });
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action(nameof(FacebookResponse))
+            };
+
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(cliam => new
+            {
+                cliam.Type,
+                cliam.Value,
+                cliam.Issuer,
+                cliam.OriginalIssuer
+            });
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+
+
     }
 }
