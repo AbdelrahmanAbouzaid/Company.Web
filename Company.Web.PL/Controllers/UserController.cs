@@ -4,6 +4,7 @@ using Company.Web.BLL.Interfaces;
 using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
 using Company.Web.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -133,6 +134,7 @@ namespace Company.Web.PL.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ConfirmDelete([FromRoute] string? id)
         {
             if (string.IsNullOrEmpty(id)) return BadRequest("Invalid Id !");

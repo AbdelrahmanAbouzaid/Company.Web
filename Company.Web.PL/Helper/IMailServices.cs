@@ -1,6 +1,6 @@
 ﻿using Company.Web.PL.Helpers;
 
-namespace Company.Web.PL
+namespace Company.Web.PL.Helper
 {
     public interface IMailServices
     {

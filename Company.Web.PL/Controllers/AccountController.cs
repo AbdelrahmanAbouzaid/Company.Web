@@ -1,5 +1,6 @@
 ﻿using Company.Web.DAL.Models;
 using Company.Web.PL.Dtos;
+using Company.Web.PL.Helper;
 using Company.Web.PL.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Facebook;
@@ -221,7 +222,11 @@ namespace Company.Web.PL.Controllers
         }
 
 
-
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
 
 
     }

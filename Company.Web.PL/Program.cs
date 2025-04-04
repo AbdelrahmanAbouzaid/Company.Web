@@ -18,7 +18,17 @@ namespace Company.Web.PL
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            }).AddGoogle(o =>
+            {
+                o.ClientId = builder.Configuration["Auth:Google:ClientId"];
+                o.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"];
+            });
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             //builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
@@ -45,15 +55,15 @@ namespace Company.Web.PL
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IMailServices, MailServices>();
 
-            builder.Services.AddAuthentication(o =>
-            {
-                o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            }).AddGoogle(o =>
-            {
-                o.ClientId = builder.Configuration["Auth:Google:ClientId"];
-                o.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"];
-            });
+            //builder.Services.AddAuthentication(o =>
+            //{
+            //    o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddGoogle(o =>
+            //{
+            //    o.ClientId = builder.Configuration["Auth:Google:ClientId"];
+            //    o.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"];
+            //});
 
             //builder.Services.AddAuthentication(o =>
             //{

@@ -189,6 +189,7 @@ namespace Company.Web.PL.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ConfirmDelete([FromRoute] int? id)
         {
             if (id is null)
@@ -196,7 +197,10 @@ namespace Company.Web.PL.Controllers
             var employee = await unitOfWork.EmployeeRepository.GetAsync(id.Value);
             if (employee is null)
                 return NotFound($"Employee With Id {id} Is Not Found");
-            DocumentSettings.Delete(employee.ImageName,"images");
+            if (employee.ImageName is not null)
+            {
+                DocumentSettings.Delete(employee.ImageName, "images");
+            }
             unitOfWork.EmployeeRepository.Delete(employee);
             await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

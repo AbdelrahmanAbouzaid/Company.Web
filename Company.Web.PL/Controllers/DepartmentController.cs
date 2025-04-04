@@ -103,6 +103,7 @@ namespace Company.Web.PL.Controllers
 
         [HttpPost]
         [ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ConfirmDelete([FromRoute] int? id)
         {
             if (id is null)
