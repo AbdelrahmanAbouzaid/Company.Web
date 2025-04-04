@@ -6,6 +6,8 @@ using Company.Web.DAL.Models;
 using Company.Web.PL.Helper;
 using Company.Web.PL.Mapping;
 using Company.Web.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +45,25 @@ namespace Company.Web.PL
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             builder.Services.AddScoped<IMailServices, MailServices>();
 
+            builder.Services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(o =>
+            {
+                o.ClientId = builder.Configuration["Auth:Google:ClientId"];
+                o.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"];
+            });
 
+            //builder.Services.AddAuthentication(o =>
+            //{
+            //    o.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+            //    o.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            //}).AddFacebook(o =>
+            //{
+            //    o.ClientId = builder.Configuration["Auth:Facebook:ClientId"];
+            //    o.ClientSecret = builder.Configuration["Auth:Facebook:ClientSecret"];
+            //});
 
 
             var app = builder.Build();
